@@ -105,6 +105,7 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 			if(displayModeList[i].Height == (unsigned int)screenHeight)
 			{
 				numerator = displayModeList[i].RefreshRate.Numerator;
+
 				denominator = displayModeList[i].RefreshRate.Denominator;
 			}
 		}
@@ -188,7 +189,7 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	//	swapChainDesc.Windowed = true;
 	//}
 
-	swapChainDesc.Windowed = true; // Needed windowed mode for debugging.
+	swapChainDesc.Windowed = false;
 
 	// Set the scan line ordering and scaling to unspecified.
 	swapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;

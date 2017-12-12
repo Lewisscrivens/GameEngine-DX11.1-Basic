@@ -16,7 +16,7 @@ GraphicsClass::GraphicsClass()
 	m_Model1 = 0;
 	m_Model2 = 0;
 	m_Model3 = 0;
-	m_Terrain = 0;
+	m_Skybox = 0;
 
 	startX = 0.0f;
 	startY = 0.0f;
@@ -187,15 +187,15 @@ bool GraphicsClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, 
 	}
 
 	// Create the second model object.
-	m_Terrain = new ModelClass;
-	if (!m_Terrain)
+	m_Skybox = new ModelClass;
+	if (!m_Skybox)
 	{
 		return false;
 	}
 
 	// Initialize the second model object.
-	result = m_Terrain->Initialize(m_D3D->GetDevice(), "../Engine/data/TropicalIsland.txt", L"../Engine/data/metal.dds");
-	if (!m_Terrain)
+	result = m_Skybox->Initialize(m_D3D->GetDevice(), "../Engine/data/Sphere.txt", L"../Engine/data/Textures/Skybox.dds");
+	if (!m_Skybox)
 	{
 		MessageBox(hwnd, L"Could not initialize the TropicalIsland object.", L"Error", MB_OK);
 		return false;
@@ -229,11 +229,11 @@ void GraphicsClass::Shutdown()
 		m_Model3 = 0;
 	}
 
-	if (m_Terrain)
+	if (m_Skybox)
 	{
-		m_Terrain->Shutdown();
-		delete m_Terrain;
-		m_Terrain = 0;
+		m_Skybox->Shutdown();
+		delete m_Skybox;
+		m_Skybox = 0;
 	}
 
 	// Release the light object.
@@ -427,13 +427,14 @@ bool GraphicsClass::Render()
 
 	// Setup the rotation and translation of the first model.
 	worldMatrix = XMMatrixRotationZ(rotation * 3.0f);
-	translateMatrix = XMMatrixTranslation(- 3.5f, 0.0f, 0.0f);
+	translateMatrix = XMMatrixTranslation(- 3.5f, -100.0f, 0.0f);
 	worldMatrix = XMMatrixMultiply(worldMatrix, translateMatrix);
 
 	// Render the first model using the texture shader.
 	m_Model1->Render(m_D3D->GetDeviceContext());
 	result = m_ShaderManager->RenderTextureShader(m_D3D->GetDeviceContext(), m_Model1->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, 
-												  m_Model1->GetTexture());
+	m_Model1->GetTexture());
+
 	if(!result)
 	{
 		return false;
@@ -443,7 +444,7 @@ bool GraphicsClass::Render()
 	m_D3D->GetWorldMatrix(worldMatrix);
 	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.03f, 0.03f, 0.03f));
 	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(rotation));
-	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(0.0f, 0.0f, 0.0f));
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(0.0f, -100.0f, 0.0f));
 
 	// Render the second model using the light shader.
 	m_Model2->Render(m_D3D->GetDeviceContext());
@@ -458,30 +459,29 @@ bool GraphicsClass::Render()
 	// Setup the rotation and translation of the third model.
 	m_D3D->GetWorldMatrix(worldMatrix);
 	worldMatrix = XMMatrixRotationX(rotation / 3.0f);
-	translateMatrix = XMMatrixTranslation(3.5f, 0.0f, 0.0f);
+	translateMatrix = XMMatrixTranslation(3.5f, -100.0f, 0.0f);
 	worldMatrix = XMMatrixMultiply(worldMatrix, translateMatrix);
 
 	// Render the third model using the bump map shader.
 	m_Model3->Render(m_D3D->GetDeviceContext());
 	result = m_ShaderManager->RenderBumpMapShader(m_D3D->GetDeviceContext(), m_Model3->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, 
-												  m_Model3->GetColorTexture(), m_Model3->GetNormalMapTexture(), m_Light->GetDirection(), 
-												  m_Light->GetDiffuseColor());
+	m_Model3->GetColorTexture(), m_Model3->GetNormalMapTexture(), m_Light->GetDirection(), m_Light->GetDiffuseColor());
+
 	if(!result)
 	{
 		return false;
 	}
 
-	// Setup the rotation and translation of the second model.
+	// Setup the rotation and translation of the earth model.
 	m_D3D->GetWorldMatrix(worldMatrix);
-	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.03f, 0.03f, 0.03f));
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(-100.0f, -100.0f, -100.0f));//Revered the scale so that the sphere was turned inside out so the texture renders on the inside.
 	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(0.0f));
-	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(0.0f, -100.0f, 0.0f));
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(0.0f, 0.0f, 0.0f));
 
 	// Render the second model using the light shader.
-	m_Terrain->Render(m_D3D->GetDeviceContext());
-	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model2->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
-	m_Terrain->GetTexture(), m_Light->GetDirection(), m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(),
-	m_Camera->GetPosition(), m_Light->GetSpecularColor(), m_Light->GetSpecularPower());
+	m_Skybox->Render(m_D3D->GetDeviceContext());
+	m_ShaderManager->RenderTextureShader(m_D3D->GetDeviceContext(), m_Skybox->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+	m_Skybox->GetTexture());
 
 	if (!result)
 	{

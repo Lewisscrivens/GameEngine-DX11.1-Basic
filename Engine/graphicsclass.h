@@ -27,7 +27,7 @@
 
 static bool FULL_SCREEN = true;
 const bool VSYNC_ENABLED = true;
-const float SCREEN_DEPTH = 1000.0f;
+const float SCREEN_DEPTH = 2000.0f;//Doubled so the skybox still renders at greater distances.
 const float SCREEN_NEAR = 0.1f;
 
 
@@ -94,7 +94,7 @@ private:
 	ModelClass* m_Model1;
 	ModelClass* m_Model2;
 	BumpModelClass* m_Model3;
-	ModelClass* m_Terrain;
+	ModelClass* m_Skybox;
 
 };
 
