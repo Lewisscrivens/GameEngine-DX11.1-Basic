@@ -22,12 +22,12 @@ GraphicsClass::GraphicsClass()
 
 	radianPerDegree = 0.0174533; //1 degree equlas this value
 
-	startX = 0.0f;
+	startX = -100.0f;
 	startY = 0.0f;
-	startZ = -10.0f;
+	startZ = -200.0f;
 
 	startRotX = 0.0f;
-	startRotY = 0.0f;
+	startRotY = 30.0f * radianPerDegree;
 	startRotZ = 0.0f;
 
 	mouseSensitivity = 0.0f;

@@ -1,4 +1,7 @@
-﻿  graphicsclass.cpp
+﻿  systemclass.cpp
+  main.cpp
+  graphicsclass.cpp
+e:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(30): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 e:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(36): warning C4305: '=': truncation from 'double' to 'float'
 e:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(71): warning C4316: 'D3DClass': object allocated on the heap may not be aligned 16
 e:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(127): warning C4316: 'CameraClass': object allocated on the heap may not be aligned 16
@@ -7,5 +10,6 @@ e:\university files\year 2\computer games studio 2\term 1\assignment\engine\engi
 e:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(396): warning C4101: 'mousePosY': unreferenced local variable
 e:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(396): warning C4101: 'mousePosX': unreferenced local variable
 e:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(569): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  Generating Code...
   Engine.vcxproj -> E:\University Files\Year 2\Computer Games Studio 2\Term 1\Assignment\Engine\Debug\Engine.exe
   Engine.vcxproj -> E:\University Files\Year 2\Computer Games Studio 2\Term 1\Assignment\Engine\Debug\Engine.pdb (Full PDB)
