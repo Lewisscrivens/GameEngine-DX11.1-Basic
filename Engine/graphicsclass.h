@@ -83,6 +83,9 @@ public:
 	float mouseSensitivity;
 	float moveSpeed;
 
+	float moonOrbitSpeed;
+	float moonOrbitSpeedOriginal;
+
 private:
 	InputClass* m_Input;
 	D3DClass* m_D3D;
@@ -94,8 +97,11 @@ private:
 	ModelClass* m_Model1;
 	ModelClass* m_Model2;
 	BumpModelClass* m_Model3;
+	BumpModelClass* m_Moon;
 	ModelClass* m_Skybox;
+	BumpModelClass* m_Earth;
 
+	double radianPerDegree;
 };
 
 #endif

@@ -443,3 +443,36 @@ bool InputClass::IsF11Pressed()//Used in the system class to enable and disable 
 
 	return false;
 }
+
+bool InputClass::IsPlusPressed()
+{
+	// Do a bitwise and on the keyboard state to check if the + key is currently being pressed.
+	if (m_keyboardState[DIK_ADD] && 0x80)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool InputClass::IsMinusPressed()
+{
+	// Do a bitwise and on the keyboard state to check if the - key is currently being pressed.
+	if (m_keyboardState[DIK_SUBTRACT] && 0x80)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool InputClass::IsNum0Pressed()
+{
+	// Do a bitwise and on the keyboard state to check if the - key is currently being pressed.
+	if (m_keyboardState[DIK_NUMPAD0] && 0x80)
+	{
+		return true;
+	}
+
+	return false;
+}

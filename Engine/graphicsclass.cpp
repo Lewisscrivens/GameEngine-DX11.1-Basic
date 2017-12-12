@@ -17,6 +17,10 @@ GraphicsClass::GraphicsClass()
 	m_Model2 = 0;
 	m_Model3 = 0;
 	m_Skybox = 0;
+	m_Earth = 0;
+	m_Moon = 0;
+
+	radianPerDegree = 0.0174533; //1 degree equlas this value
 
 	startX = 0.0f;
 	startY = 0.0f;
@@ -28,6 +32,9 @@ GraphicsClass::GraphicsClass()
 
 	mouseSensitivity = 0.0f;
 	moveSpeed = 0.0f;
+
+	moonOrbitSpeed = 0.05; // The bigger the float the faster the moon gets as the rotation amount becomes greater.
+	moonOrbitSpeedOriginal = moonOrbitSpeed;
 }
 
 
@@ -172,21 +179,21 @@ bool GraphicsClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, 
 
 	// Create the third bump model object for models with normal maps and related vectors.
 	m_Model3 = new BumpModelClass;
-	if(!m_Model3)
+	if (!m_Model3)
 	{
 		return false;
 	}
 
 	// Initialize the bump model object.
-	result = m_Model3->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/stone.dds", 
-								  L"../Engine/data/normal.dds");
-	if(!result)
+	result = m_Model3->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/stone.dds",
+		L"../Engine/data/normal.dds");
+	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the third model object.", L"Error", MB_OK);
 		return false;
 	}
 
-	// Create the second model object.
+	// Create the Skybox object.
 	m_Skybox = new ModelClass;
 	if (!m_Skybox)
 	{
@@ -194,12 +201,45 @@ bool GraphicsClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, 
 	}
 
 	// Initialize the second model object.
-	result = m_Skybox->Initialize(m_D3D->GetDevice(), "../Engine/data/Sphere.txt", L"../Engine/data/Textures/Skybox.dds");
+	result = m_Skybox->Initialize(m_D3D->GetDevice(), "../Engine/data/Sphere.txt", L"../Engine/data/Skybox.dds");
 	if (!m_Skybox)
 	{
 		MessageBox(hwnd, L"Could not initialize the TropicalIsland object.", L"Error", MB_OK);
 		return false;
 	}
+
+	// Create the Earth object.
+	m_Earth = new BumpModelClass;
+	if (!m_Earth)
+	{
+		return false;
+	}
+
+	// Initialize the second model object.
+	result = m_Earth->Initialize(m_D3D->GetDevice(), "../Engine/data/SphereHQ.txt", L"../Engine/data/Earth.dds",
+					L"../Engine/data/EarthNormal.dds");
+	if (!m_Earth)
+	{
+		MessageBox(hwnd, L"Could not initialize the Earth.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Create the moon object for models with normal maps and related vectors.
+	m_Moon = new BumpModelClass;
+	if (!m_Moon)
+	{
+		return false;
+	}
+
+	// Initialize the bump model object.
+	result = m_Moon->Initialize(m_D3D->GetDevice(), "../Engine/data/SphereHQ.txt", L"../Engine/data/Moon.dds",
+		L"../Engine/data/MoonNormal.dds");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the moon object.", L"Error", MB_OK);
+		return false;
+	}
+
 
 	return true;
 }
@@ -222,7 +262,7 @@ void GraphicsClass::Shutdown()
 		m_Model2 = 0;
 	}
 
-	if(m_Model3)
+	if (m_Model3)
 	{
 		m_Model3->Shutdown();
 		delete m_Model3;
@@ -234,6 +274,20 @@ void GraphicsClass::Shutdown()
 		m_Skybox->Shutdown();
 		delete m_Skybox;
 		m_Skybox = 0;
+	}
+
+	if (m_Earth)
+	{
+		m_Earth->Shutdown();
+		delete m_Earth;
+		m_Earth = 0;
+	}
+
+	if (m_Moon)
+	{
+		m_Moon->Shutdown();
+		delete m_Moon;
+		m_Moon = 0;
 	}
 
 	// Release the light object.
@@ -387,6 +441,24 @@ bool GraphicsClass::HandleMovementInput(float frameTime)
 	keyDown = m_Input->IsLeftShiftPressed();
 	m_Position->SetMoveSpeed(keyDown, moveSpeed);
 
+	keyDown = m_Input->IsPlusPressed();//If the numpad plus key is pressed then the moonOrbitSpeed is increased.
+	if (keyDown)
+	{
+		moonOrbitSpeed += 0.001;
+	}
+
+	keyDown = m_Input->IsMinusPressed();//If the numpad minus key is pressed then the moonOrbitSpeed is decreased.
+	if (keyDown)
+	{
+		moonOrbitSpeed -= 0.001;
+	}
+
+	keyDown = m_Input->IsNum0Pressed();//If the numpad 0 key is pressed then the moonOrbitSpeed is reset.
+	if (keyDown && moonOrbitSpeed != moonOrbitSpeedOriginal)//Checks if the speed has already been reset already.
+	{
+		moonOrbitSpeed = moonOrbitSpeedOriginal;
+	}
+
 	//Run the poisition method move mouse and pass in variables from the input class.
 	m_Position->MoveMouse(mouseChangeX, mouseChangeY, mouseSensitivity);
 
@@ -427,7 +499,7 @@ bool GraphicsClass::Render()
 
 	// Setup the rotation and translation of the first model.
 	worldMatrix = XMMatrixRotationZ(rotation * 3.0f);
-	translateMatrix = XMMatrixTranslation(- 3.5f, -100.0f, 0.0f);
+	translateMatrix = XMMatrixTranslation(- 3.5f, 0.0f, 0.0f);
 	worldMatrix = XMMatrixMultiply(worldMatrix, translateMatrix);
 
 	// Render the first model using the texture shader.
@@ -444,7 +516,7 @@ bool GraphicsClass::Render()
 	m_D3D->GetWorldMatrix(worldMatrix);
 	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.03f, 0.03f, 0.03f));
 	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(rotation));
-	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(0.0f, -100.0f, 0.0f));
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(0.0f, 0.0f, 0.0f));
 
 	// Render the second model using the light shader.
 	m_Model2->Render(m_D3D->GetDeviceContext());
@@ -456,32 +528,72 @@ bool GraphicsClass::Render()
 		return false;
 	}
 
-	// Setup the rotation and translation of the third model.
+	//Set rotation, translation and scale for the moon
 	m_D3D->GetWorldMatrix(worldMatrix);
-	worldMatrix = XMMatrixRotationX(rotation / 3.0f);
-	translateMatrix = XMMatrixTranslation(3.5f, -100.0f, 0.0f);
-	worldMatrix = XMMatrixMultiply(worldMatrix, translateMatrix);
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.03f, 0.03f, 0.03f));
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(rotation));
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(3.5f, 0.0f, 0.0f));
 
 	// Render the third model using the bump map shader.
 	m_Model3->Render(m_D3D->GetDeviceContext());
-	result = m_ShaderManager->RenderBumpMapShader(m_D3D->GetDeviceContext(), m_Model3->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, 
+	result = m_ShaderManager->RenderBumpMapShader(m_D3D->GetDeviceContext(), m_Model3->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
 	m_Model3->GetColorTexture(), m_Model3->GetNormalMapTexture(), m_Light->GetDirection(), m_Light->GetDiffuseColor());
 
-	if(!result)
+	if (!result)
 	{
 		return false;
 	}
 
-	// Setup the rotation and translation of the earth model.
+	// Setup the rotation and translation of the Skybox.
 	m_D3D->GetWorldMatrix(worldMatrix);
 	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(-100.0f, -100.0f, -100.0f));//Revered the scale so that the sphere was turned inside out so the texture renders on the inside.
 	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(0.0f));
 	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(0.0f, 0.0f, 0.0f));
 
-	// Render the second model using the light shader.
+	// Render the Skybox using the light shader.
 	m_Skybox->Render(m_D3D->GetDeviceContext());
 	m_ShaderManager->RenderTextureShader(m_D3D->GetDeviceContext(), m_Skybox->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
 	m_Skybox->GetTexture());
+
+	if (!result)
+	{
+		return false;
+	}
+
+
+
+	// Setup the rotation and translation of the Earth.
+	m_D3D->GetWorldMatrix(worldMatrix);
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.5f, 0.5f, 0.5f));
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(rotation / 4));
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationZ(23.5f * radianPerDegree));//The earth is on a 23.5 degree axis so I have created a variable radian which is equal to the amount of radians in 1 degree.
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(0.0f, 0.0f, 0.0f));
+
+	// Render the Earth using the bump map shader.
+	m_Earth->Render(m_D3D->GetDeviceContext());
+	result = m_ShaderManager->RenderBumpMapShader(m_D3D->GetDeviceContext(), m_Earth->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+	m_Earth->GetColorTexture(), m_Earth->GetNormalMapTexture(), m_Light->GetDirection(), m_Light->GetDiffuseColor());
+
+	if (!result)
+	{
+		return false;
+	}
+
+
+	//Set rotation, translation and scale for the moon
+	m_D3D->GetWorldMatrix(worldMatrix);
+	XMMATRIX moonRot;
+	XMMATRIX moonTran;
+	XMMATRIX moonScale;
+	moonScale = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.2f, 0.2f, 0.2f));//Scaling of the moon (x,y,z).
+	moonRot = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(rotation * moonOrbitSpeed));//Rotation around YAW (y-axis), rotation is a constantly incrementing float value.
+	moonTran = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(-500.0f, 0.0f, 0.0f));//Positional values (x,y,x).
+	worldMatrix = XMMatrixMultiply(worldMatrix, moonScale * moonTran * moonRot);//Add the matrixes together by multiplication and then add them to the moons world matrix by again multiplication.
+
+	// Render moon using the bump map shader.
+	m_Moon->Render(m_D3D->GetDeviceContext());
+	result = m_ShaderManager->RenderBumpMapShader(m_D3D->GetDeviceContext(), m_Moon->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+		m_Moon->GetColorTexture(), m_Moon->GetNormalMapTexture(), m_Light->GetDirection(), m_Light->GetDiffuseColor());
 
 	if (!result)
 	{

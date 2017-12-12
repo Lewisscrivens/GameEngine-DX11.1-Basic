@@ -60,6 +60,9 @@ public:
 	bool IsLeftShiftPressed();
 	bool IsSpaceBarPressed();
 	bool IsF11Pressed();
+	bool IsPlusPressed();
+	bool IsMinusPressed();
+	bool IsNum0Pressed();
 	
 
 private:
