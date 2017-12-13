@@ -17,6 +17,8 @@
 // Up: Space Bar
 // Down: Left Ctrl
 //
+// Increase Camera Speed: Left Shift
+//
 // Moon Orbit Speed:
 // Increase: NUM_PLUS
 // Decrease: NUM_MINUS
@@ -26,7 +28,7 @@
 // Enable: 0
 // Disable: 9
 // 
-// Increase Camera Speed: Left Shift
+// 
 // Reset Camera Location: R
 // Set Camera Start Location: H
 //

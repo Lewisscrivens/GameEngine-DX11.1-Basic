@@ -744,7 +744,7 @@ bool GraphicsClass::Render()
 	// Setup the rotation and translation of the Earth.
 	m_D3D->GetWorldMatrix(worldMatrix);
 	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.6f, 0.6f, 0.6f));
-	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(rotation / 4));
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(rotation / 8));//Much slower rotation as the object is very big so small changes can be seen much easier.
 	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationZ(23.5f * radianPerDegree));//The earth is on a 23.5 degree axis so I have created a variable radian which is equal to the amount of radians in 1 degree.
 	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(0.0f, 0.0f, 0.0f));
 
@@ -779,7 +779,8 @@ bool GraphicsClass::Render()
 	moonScale = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.3f, 0.3f, 0.3f));//Scaling of the moon (x,y,z).
 	moonRot = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(moonRotationY));//Rotation around YAW (y-axis), rotation is a constantly incrementing float value.
 	moonTran = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(moonXTranslation, 0.0f, 0.0f));//Positional values (x,y,x).
-	
+	//Pointless doing the moons roation on its own axis as it only rotates every 27 days...
+
 	if (moonEclipse)//If the moon exlipse is enabled then the rotation is applied before the scale and translations so that it stays in its set translation.
 	{
 		worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(moonRotationY));
@@ -827,7 +828,7 @@ bool GraphicsClass::Render()
 	XMMATRIX sataliteTrans;
 	sataliteScale = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.05f, 0.05f, 0.05f));//Scaling of the satalite (x,y,z).
 	sataliteRotY = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(rotation / 6));//Rotation around PITCH (y-axis), rotation is a constantly incrementing float value.
-	sataliteTrans = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(-40.0f, 0.0f, 0.0f));//Positional values (x,y,x).
+	sataliteTrans = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(-45.0, 0.0f, 0.0f));//Positional values (x,y,x).
 	worldMatrix = XMMatrixMultiply(worldMatrix, sataliteScale * sataliteTrans * sataliteRotY);
 
 	// Render the Satalite using the bump map shader.
@@ -849,7 +850,7 @@ bool GraphicsClass::Render()
 	ufoScale = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.05f, 0.05f, 0.05f));//Scaling of the satalite (x,y,z).
 	ufoRotY = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(rotation / 8));//Rotation around PITCH (y-axis), rotation is a constantly incrementing float value.
 	ufoRotX = XMMatrixMultiply(worldMatrix, XMMatrixRotationX(rotation / 8));//Rotation around ROLL (x-axis), rotation is a constantly incrementing float value.
-	ufoTrans = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(-35.0f, 0.0f, 0.0f));//Positional values (x,y,x).
+	ufoTrans = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(-45.0f, 0.0f, 0.0f));//Positional values (x,y,x).
 	worldMatrix = XMMatrixMultiply(worldMatrix, ufoScale * ufoTrans * ufoRotY * ufoRotX);
 
 	// Render the UFO using the bump map shader.
