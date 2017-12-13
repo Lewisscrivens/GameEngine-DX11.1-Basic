@@ -17,12 +17,16 @@
 // Up: Space Bar
 // Down: Left Ctrl
 //
+//
 // Moon Orbit Speed:
 // Increase: NUM_PLUS
 // Decrease: NUM_MINUS
 // Reset: NUM_0
 // 
 // Increase Speed: Left Shift
+// Reset Camera: R
+// Set Camera start location: H
+//
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -105,6 +109,8 @@ private:
 	BumpModelClass* m_Moon;
 	ModelClass* m_Skybox;
 	BumpModelClass* m_Earth;
+
+	
 
 	double radianPerDegree;
 };

@@ -386,6 +386,18 @@ bool InputClass::IsRPressed()
 	return false;
 }
 
+bool InputClass::IsHPressed()
+{
+	// Do a bitwise and on the keyboard state to check if H is currently being pressed.
+	if (m_keyboardState[DIK_H] & 0x80)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+
 
 bool InputClass::IsZPressed()
 {

@@ -360,6 +360,12 @@ bool GraphicsClass::Frame()
 		return false;
 	}
 
+	if (m_Input->IsHPressed())
+	{
+		m_Position->GetPosition(startX, startY, startZ);//Gets the position and sets it to the varibales that are for resetting the camera position.
+		m_Position->GetRotation(startRotX, startRotY, startRotZ);//Gets the rotation and sets it to the varibales that are for resetting the camera rotation.
+	}
+
 	// Check if the user pressed escape and wants to exit the application.
 	if (m_Input->IsEscapePressed() == true)
 	{

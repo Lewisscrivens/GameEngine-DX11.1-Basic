@@ -55,6 +55,7 @@ public:
 	bool IsAPressed();
 	bool IsDPressed();
 	bool IsRPressed();
+	bool IsHPressed();
 	bool IsZPressed();
 	bool IsLeftCtrlPressed();
 	bool IsLeftShiftPressed();
