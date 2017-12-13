@@ -7,7 +7,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // CONTROLES:
 // 
-// Fullscreen: F11
+// Fullscreen: F11 [NOT WORKING CURRENTLY]
 // Camera Up: Mouse y-axis
 // Camera Right: Mouse x-axis
 // Forward: W
@@ -17,15 +17,22 @@
 // Up: Space Bar
 // Down: Left Ctrl
 //
-//
 // Moon Orbit Speed:
 // Increase: NUM_PLUS
 // Decrease: NUM_MINUS
 // Reset: NUM_0
+//
+// Moon Eclipse:
+// Enable: 0
+// Disable: 9
 // 
-// Increase Speed: Left Shift
-// Reset Camera: R
-// Set Camera start location: H
+// Increase Camera Speed: Left Shift
+// Reset Camera Location: R
+// Set Camera Start Location: H
+//
+// Launch Shuttle: M
+// Increase Shuttle Speed: PgUp
+// Decrease Shuttle Speed: PgDn
 //
 //
 ////////////////////////////////////////////////////////////////////////////////
@@ -36,7 +43,7 @@
 
 static bool FULL_SCREEN = true;
 const bool VSYNC_ENABLED = true;
-const float SCREEN_DEPTH = 2000.0f;//Doubled so the skybox still renders at greater distances.
+const float SCREEN_DEPTH = 4000.0f;//Made bigger as the skybox wouldnt render etc.
 const float SCREEN_NEAR = 0.1f;
 
 
@@ -106,12 +113,26 @@ private:
 	ModelClass* m_Model1;
 	ModelClass* m_Model2;
 	BumpModelClass* m_Model3;
-	BumpModelClass* m_Moon;
 	ModelClass* m_Skybox;
+	ModelClass* m_Sun;
 	BumpModelClass* m_Earth;
+	BumpModelClass* m_Moon;
+	BumpModelClass* m_Shuttle;
+	BumpModelClass* m_Satalite;
+	BumpModelClass* m_UFO;
 
 	
+	float shuttleDistance;
+	float shuttleSpeed;
+	float shuttleMaxSpeed;
+	float shuttleDefaultSpeed;
+	float shuttleFaceMoon;
+	bool shuttleTraveling;
 
+	float moonXTranslation;
+	float moonRotationY;
+	bool moonEclipse;
+	
 	double radianPerDegree;
 };
 

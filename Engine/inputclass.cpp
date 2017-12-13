@@ -375,6 +375,17 @@ bool InputClass::IsDPressed()
 	return false;
 }
 
+bool InputClass::IsMPressed()
+{
+	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
+	if (m_keyboardState[DIK_M] & 0x80)
+	{
+		return true;
+	}
+
+	return false;
+}
+
 bool InputClass::IsRPressed()
 {
 	// Do a bitwise and on the keyboard state to check if R is currently being pressed.
@@ -482,6 +493,50 @@ bool InputClass::IsNum0Pressed()
 {
 	// Do a bitwise and on the keyboard state to check if the - key is currently being pressed.
 	if (m_keyboardState[DIK_NUMPAD0] && 0x80)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool InputClass::IsPgUpPressed()
+{
+	// Do a bitwise and on the keyboard state to check if the PgUp key is currently being pressed.
+	if (m_keyboardState[DIK_PGUP] && 0x80)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool InputClass::IsPgDnPressed()
+{
+	// Do a bitwise and on the keyboard state to check if the PgDn key is currently being pressed.
+	if (m_keyboardState[DIK_PGDN] && 0x80)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool InputClass::Is0Pressed()
+{
+	// Do a bitwise and on the keyboard state to check if the 0 key is currently being pressed.
+	if (m_keyboardState[DIK_0] && 0x80)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool InputClass::Is9Pressed()
+{
+	// Do a bitwise and on the keyboard state to check if the 0 key is currently being pressed.
+	if (m_keyboardState[DIK_9] && 0x80)
 	{
 		return true;
 	}

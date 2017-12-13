@@ -54,6 +54,7 @@ public:
 	bool IsSPressed();
 	bool IsAPressed();
 	bool IsDPressed();
+	bool IsMPressed();
 	bool IsRPressed();
 	bool IsHPressed();
 	bool IsZPressed();
@@ -64,6 +65,12 @@ public:
 	bool IsPlusPressed();
 	bool IsMinusPressed();
 	bool IsNum0Pressed();
+	bool IsPgUpPressed();
+	bool IsPgDnPressed();
+	bool Is0Pressed();
+	bool Is9Pressed();
+
+
 	
 
 private:
