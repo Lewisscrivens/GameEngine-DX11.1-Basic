@@ -1,14 +1,14 @@
 ﻿  graphicsclass.cpp
-e:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(41): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-e:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(47): warning C4305: '=': truncation from 'double' to 'float'
-e:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(86): warning C4316: 'D3DClass': object allocated on the heap may not be aligned 16
-e:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(142): warning C4316: 'CameraClass': object allocated on the heap may not be aligned 16
-e:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(488): warning C4305: '+=': truncation from 'double' to 'float'
-e:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(493): warning C4305: '-=': truncation from 'double' to 'float'
-e:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(534): warning C4305: '+=': truncation from 'double' to 'float'
-e:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(542): warning C4305: '-=': truncation from 'double' to 'float'
-e:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(577): warning C4101: 'mousePosY': unreferenced local variable
-e:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(577): warning C4101: 'mousePosX': unreferenced local variable
-e:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(748): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-  Engine.vcxproj -> E:\University Files\Year 2\Computer Games Studio 2\Term 1\Assignment\Engine\Debug\Engine.exe
-  Engine.vcxproj -> E:\University Files\Year 2\Computer Games Studio 2\Term 1\Assignment\Engine\Debug\Engine.pdb (Full PDB)
+g:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(47): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+g:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(92): warning C4316: 'D3DClass': object allocated on the heap may not be aligned 16
+g:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(148): warning C4316: 'CameraClass': object allocated on the heap may not be aligned 16
+g:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(494): warning C4305: '+=': truncation from 'double' to 'float'
+g:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(500): warning C4305: '-=': truncation from 'double' to 'float'
+g:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(532): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+g:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(552): warning C4305: '+=': truncation from 'double' to 'float'
+g:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(561): warning C4305: '-=': truncation from 'double' to 'float'
+g:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(599): warning C4101: 'mousePosY': unreferenced local variable
+g:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(599): warning C4101: 'mousePosX': unreferenced local variable
+g:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(769): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  Engine.vcxproj -> G:\University Files\Year 2\Computer Games Studio 2\Term 1\Assignment\Engine\Debug\Engine.exe
+  Engine.vcxproj -> G:\University Files\Year 2\Computer Games Studio 2\Term 1\Assignment\Engine\Debug\Engine.pdb (Full PDB)

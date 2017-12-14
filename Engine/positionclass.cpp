@@ -58,7 +58,7 @@ void PositionClass::SetRotation(float x, float y, float z)
 	return;
 }
 
-void PositionClass::SetMoveSpeed(bool keydown, float moveSpeed)
+void PositionClass::SetMoveSpeed(bool keydown, float moveSpeed) //Used to set the movement speed of the camera which effects all movement variables.
 {
 	// Update the backward speed movement based on the frame time and whether the user is holding the key down or not.
 	if (keydown)
@@ -439,19 +439,16 @@ void PositionClass::LookDownward(bool keydown)
 
 void PositionClass::MoveMouse(int mouseChangeX, int mouseChangeY, float mouseSensitivity)//When the method is ran these variables must be passed to the method.
 {
-	if ((m_rotationX + mouseChangeY) > 90)//If rotation + the change in rotation is greater than 90 keep it at 90 degrees.
-	{
-		m_rotationX = 90;
-	}
-	else if ((m_rotationX + mouseChangeY) < -90)//If rotation - the change in rotation is greater than 90 keep it at 90 degrees.
-	{
-		m_rotationX = -90;
-	}
-	else
+	if((m_rotationX + mouseChangeY * mouseSensitivity) <= 90 || (m_rotationX + mouseChangeY * mouseSensitivity) >= -90)//Check that any added rotation doesnt exceed the boundries for X rotation.
 	{
 		m_rotationX += mouseChangeY * mouseSensitivity;//Set rotationX to rotationX + mouse change on the y axis, the smaller the mouse sensitivity the more it reduces the rotation.
 	}
 
+	if (m_rotationY > 360 || m_rotationY < -360)//Checks if the max rotation is exceeded and resets back to 0 as 360 degrees is the same as 0 degrees.
+	{
+		m_rotationY = 0;
+	}
 
 	m_rotationY += mouseChangeX * mouseSensitivity;//Set rotationX to rotationX + mouse change on the y axis.
+
 }

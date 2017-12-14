@@ -13,26 +13,32 @@ GraphicsClass::GraphicsClass()
 	m_Light = 0;
 	m_Position = 0;
 	m_Camera = 0;
+
 	m_Model1 = 0;
 	m_Model2 = 0;
 	m_Model3 = 0;
+
 	m_Skybox = 0;
 	m_Sun = 0;
 	m_Earth = 0;
 	m_Moon = 0;
 	m_Shuttle = 0;
-	m_Satalite = 0;
+	m_Satelite = 0;
 	m_UFO = 0;
 
+	// Variables for controlling the shuttle behaviour.
 	shuttleDistance = 0.0f;
-	shuttleSpeed = 1.0f;
-	shuttleMaxSpeed = 5.0f;
+	shuttleSpeed = 0.5f;
+	shuttleMaxSpeed = 2.5f;
+	shuttleRotation = 0.0f;
 	shuttleDefaultSpeed = shuttleSpeed;
 	shuttleTraveling = false;
-	shuttleFaceMoon = true;//To start with the shuttle is going from earth to the moon so this is true
+	shuttleFaceMoon = true;
 
-	radianPerDegree = 0.0174533; //1 degree equlas this value (Quickest method as it doesnt have to be 100% accurate for my use)
+	// 1 degree equlas this value (Quickest method as it doesnt have to be 100% accurate for my use)
+	radianPerDegree = 0.0174533;
 
+	// Starting position for the camera on instalisation.
 	startX = -100.0f;
 	startY = 0.0f;
 	startZ = -200.0f;
@@ -44,10 +50,10 @@ GraphicsClass::GraphicsClass()
 	mouseSensitivity = 0.0f;
 	moveSpeed = 0.0f;
 
-	moonOrbitSpeed = 0.05;//The bigger the float the faster the moon gets as the rotation amount becomes greater.
+	// Variables for controlling the moon orbit.
+	moonOrbitSpeed = 0.001f;
 	moonOrbitSpeedOriginal = moonOrbitSpeed;
-
-	moonXTranslation = -600.0f; //Set the moon translation along the x-axis.
+	moonXTranslation = -500.0f;// This controls both the translation along the x-axis of the moon and the distance for the shuttle to travel.
 	moonRotationY = 0.0f;
 	moonEclipse = false;
 }
@@ -146,7 +152,7 @@ bool GraphicsClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, 
 	}
 
 	// Set the initial position of the camera.
-	//m_Camera->SetPosition(0.0f, 0.0f, -10.0f);
+	// m_Camera->SetPosition(0.0f, 0.0f, -10.0f);
 
 	// Create the light object.
 	m_Light = new LightClass;
@@ -158,7 +164,7 @@ bool GraphicsClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, 
 	// Initialize the light object.
 	m_Light->SetAmbientColor(0.15f, 0.15f, 0.15f, 1.0f);
 	m_Light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
-	m_Light->SetDirection(1.0f, 0.0f, 0.0f);//Direction vector for the light source.
+	m_Light->SetDirection(1.0f, 0.0f, 0.0f);// Direction vector for the light source.
 	m_Light->SetSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light->SetSpecularPower(64.0f);
 
@@ -215,11 +221,11 @@ bool GraphicsClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, 
 		return false;
 	}
 
-	// Initialize the second model object.
+	// Initialize the Skybox object.
 	result = m_Skybox->Initialize(m_D3D->GetDevice(), "../Engine/data/Sphere.txt", L"../Engine/data/Skybox.dds");
 	if (!m_Skybox)
 	{
-		MessageBox(hwnd, L"Could not initialize the TropicalIsland object.", L"Error", MB_OK);
+		MessageBox(hwnd, L"Could not initialize the Skybox object.", L"Error", MB_OK);
 		return false;
 	}
 
@@ -230,11 +236,11 @@ bool GraphicsClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, 
 		return false;
 	}
 
-	// Initialize the second model object.
+	// Initialize the Sun object.
 	result = m_Sun->Initialize(m_D3D->GetDevice(), "../Engine/data/SphereHQ.txt", L"../Engine/data/Sun.dds");
 	if (!result)
 	{
-		MessageBox(hwnd, L"Could not initialize the Sun.", L"Error", MB_OK);
+		MessageBox(hwnd, L"Could not initialize the Sun object.", L"Error", MB_OK);
 		return false;
 	}
 
@@ -245,73 +251,70 @@ bool GraphicsClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, 
 		return false;
 	}
 
-	// Initialize the second model object.
+	// Initialize the Earth object.
 	result = m_Earth->Initialize(m_D3D->GetDevice(), "../Engine/data/SphereHQ.txt", L"../Engine/data/Earth.dds",
 					L"../Engine/data/EarthNormal.dds");
 	if (!result)
 	{
-		MessageBox(hwnd, L"Could not initialize the Earth.", L"Error", MB_OK);
+		MessageBox(hwnd, L"Could not initialize the Earth object.", L"Error", MB_OK);
 		return false;
 	}
 
-	// Create the moon object for models with normal maps and related vectors.
+	// Create the Moon object with normal texture.
 	m_Moon = new BumpModelClass;
 	if (!m_Moon)
 	{
 		return false;
 	}
 
-	// Initialize the bump model object.
+	// Initialize the Moon object.
 	result = m_Moon->Initialize(m_D3D->GetDevice(), "../Engine/data/SphereHQ.txt", L"../Engine/data/Moon.dds",
 		L"../Engine/data/MoonNormal.dds");
 	if (!result)
 	{
-		MessageBox(hwnd, L"Could not initialize the moon object.", L"Error", MB_OK);
+		MessageBox(hwnd, L"Could not initialize the Moon object.", L"Error", MB_OK);
 		return false;
 	}
 
-	// Create the shuttle object for models with normal maps and related vectors.
-	m_Shuttle = new BumpModelClass;
+	// Create the Shuttle object.
+	m_Shuttle = new ModelClass;
 	if (!m_Shuttle)
 	{
 		return false;
 	}
 
-	// Initialize the bump model object.
-	result = m_Shuttle->Initialize(m_D3D->GetDevice(), "../Engine/data/Sphere.txt", L"../Engine/data/Moon.dds",
-		L"../Engine/data/MoonNormal.dds");
+	// Initialize the Shuttle object.
+	result = m_Shuttle->Initialize(m_D3D->GetDevice(), "../Engine/data/Shuttle.txt", L"../Engine/data/metal.dds");
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the shuttle object.", L"Error", MB_OK);
 		return false;
 	}
 
-	// Create the satalite object for models with normal maps and related vectors.
-	m_Satalite = new BumpModelClass;
-	if (!m_Satalite)
+	// Create the Satelite object.
+	m_Satelite = new ModelClass;
+	if (!m_Satelite)
 	{
 		return false;
 	}
 
-	// Initialize the bump model object.
-	result = m_Satalite->Initialize(m_D3D->GetDevice(), "../Engine/data/Sphere.txt", L"../Engine/data/Moon.dds",
-		L"../Engine/data/MoonNormal.dds");
+	// Initialize the Satelite object.
+	result = m_Satelite->Initialize(m_D3D->GetDevice(), "../Engine/data/Satelite.txt", L"../Engine/data/metal.dds");
 	if (!result)
 	{
-		MessageBox(hwnd, L"Could not initialize the satalite object.", L"Error", MB_OK);
+		MessageBox(hwnd, L"Could not initialize the Satelite object.", L"Error", MB_OK);
 		return false;
 	}
 
-	// Create the UFO object for models with normal maps and related vectors.
-	m_UFO = new BumpModelClass;
+	// Create the UFO object.
+	m_UFO = new ModelClass;
 	if (!m_UFO)
 	{
 		return false;
 	}
 
-	// Initialize the bump model object.
-	result = m_UFO->Initialize(m_D3D->GetDevice(), "../Engine/data/Sphere.txt", L"../Engine/data/Moon.dds",
-		L"../Engine/data/MoonNormal.dds");
+	// Initialize the UFO object.
+	result = m_UFO->Initialize(m_D3D->GetDevice(), "../Engine/data/UFO.txt", L"../Engine/data/metal.dds");
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the UFO object.", L"Error", MB_OK);
@@ -381,11 +384,11 @@ void GraphicsClass::Shutdown()
 		m_Shuttle = 0;
 	}
 
-	if (m_Satalite)
+	if (m_Satelite)
 	{
-		m_Satalite->Shutdown();
-		delete m_Satalite;
-		m_Satalite = 0;
+		m_Satelite->Shutdown();
+		delete m_Satelite;
+		m_Satelite = 0;
 	}
 
 	if (m_UFO)
@@ -465,10 +468,12 @@ bool GraphicsClass::Frame()
 		return false;
 	}
 
-	if (m_Input->IsHPressed())
+	// CONTROLES (See .h file for list of controles):
+
+	if (m_Input->IsHPressed())// Used to set current position as save position.
 	{
-		m_Position->GetPosition(startX, startY, startZ);//Gets the position and sets it to the varibales that are for resetting the camera position.
-		m_Position->GetRotation(startRotX, startRotY, startRotZ);//Gets the rotation and sets it to the varibales that are for resetting the camera rotation.
+		m_Position->GetPosition(startX, startY, startZ);// Gets the position and sets it to the varibales that are for the saved camera position.
+		m_Position->GetRotation(startRotX, startRotY, startRotZ);// Gets the rotation and sets it to the varibales that are for the saved camera rotation.
 	}
 
 	// Check if the user pressed escape and wants to exit the application.
@@ -477,32 +482,38 @@ bool GraphicsClass::Frame()
 		return false;
 	}
 
-	//If R key is pressed then run the resetCameraPosition method.
+	// Check if the user has pressed R.
 	if (m_Input->IsRPressed() == true)
 	{
-		ResetCameraPosition();
+		SetCameraPosition(startX, startY, startZ, startRotX, startRotY, startRotZ);// Set camera position to stored position and rotation variables.
 	}
 
-	if (m_Input->IsPlusPressed())//If the numpad plus key is pressed then the moonOrbitSpeed is increased.
+	// Check if the user has pressed plus & moonOrbitSpeed is not more than 10x bigger than normal.
+	if (m_Input->IsPlusPressed() && moonOrbitSpeed < moonOrbitSpeedOriginal * 10)
 	{
-		moonOrbitSpeed += 0.001;
+		moonOrbitSpeed += 0.0001;// Increase the moonOrbitSpeed.
 	}
 
-	if (m_Input->IsMinusPressed())//If the numpad minus key is pressed then the moonOrbitSpeed is decreased.
+	// Check if the user has pressed minus & the moonOrbitSpeed is bigger than original value.
+	if (m_Input->IsMinusPressed() && moonOrbitSpeed > moonOrbitSpeedOriginal)
 	{
-		moonOrbitSpeed -= 0.001;
+		moonOrbitSpeed -= 0.0001;// Decrease the moonOrbitSpeed.
 	}
 
-	if (m_Input->IsNum0Pressed() && moonOrbitSpeed != moonOrbitSpeedOriginal)//Checks if the speed has already been reset already.
+	// Check if the user has pressed num_0 & moonOrbitSpeed doesnt already equal original value.
+	if (m_Input->IsNum0Pressed() && moonOrbitSpeed != moonOrbitSpeedOriginal)
 	{
-		moonOrbitSpeed = moonOrbitSpeedOriginal;//Resets the moon orbit speed variable back to original value.
+		moonOrbitSpeed = moonOrbitSpeedOriginal;// Reset moonOrbitSpeed to original value.
 	}
 
-	if (m_Input->IsMPressed() && !shuttleTraveling || shuttleTraveling && shuttleDistance > -500.0f && shuttleDistance < 0)//If the key is pressed or the key has already been pressed and the shuttle is still travelling it will continue to increment the distance which effects the shuttle translation matrix.
-	{
-		shuttleTraveling = true;//When the key is first pressed set shuttleTravelling to true.
+	//shuttleController:
 
-		if (shuttleFaceMoon)
+	// Check if the user has pressed M & the shuttle isnt traveling OR if shuttle is traveling and the shuttle hasnt reached the moon or earth yet.
+	if (m_Input->IsMPressed() && !shuttleTraveling || shuttleTraveling && shuttleDistance > moonXTranslation && shuttleDistance < 0)
+	{
+		shuttleTraveling = true;// Shuttle is now traveling.
+
+		if (shuttleFaceMoon)// The shuttle is facing the moon.
 		{
 			shuttleDistance -= shuttleSpeed;//Decrement the shuttle distance.
 		}
@@ -511,47 +522,58 @@ bool GraphicsClass::Frame()
 			shuttleDistance += shuttleSpeed;//Increment the shuttle distance.
 		}
 	}
-	else if (shuttleTraveling)
+	else if (shuttleTraveling)// If the shuttle is traveling but it has reached the moon or the earth.
 	{
-		shuttleTraveling = false;//This is ran when the distance has been traveled so the shuttleTravelling is set to false.
+		shuttleTraveling = false;// Shuttle no longer traveling.
 
-		if (shuttleDistance <= moonXTranslation)
+		if (shuttleDistance <= moonXTranslation)// If the shuttle is at the Moon translation.
 		{
-			shuttleFaceMoon = false;//When the total distance has been traveled shuttle faces the earth.
+			shuttleFaceMoon = false;// Shuttle facing Earth.
+			shuttleRotation = 180.0f * radianPerDegree;// Set shuttleRotation to 180 degrees to face the earth.
 		}
-		else if (shuttleDistance >= 0.0f)
+		else if (shuttleDistance >= 0.0f)// If the shuttle is at the Earth translation.
 		{
-			shuttleFaceMoon = true;//When the total distance has been traveled shuttle faces the moon.
+			shuttleFaceMoon = true;// Shuttle facing Moon.
+			shuttleRotation = 0.0f;// Set shuttleRotation to 0 degrees to face the earth.
 		}
 
-		shuttleSpeed = shuttleDefaultSpeed;//Set the default speed back to normal after travel.
+		shuttleSpeed = shuttleDefaultSpeed;// Reset the shuttleSpeed back to original.
+	}
+	else if (!shuttleTraveling && shuttleSpeed != shuttleDefaultSpeed)// Check if the shuttle isnt traveling & the shuttleSpeed still hasnt been reset.
+	{
+		shuttleSpeed = shuttleDefaultSpeed;// Reset the shuttleSpeed back to original.
 	}
 
-	if (m_Input->IsPgUpPressed())//When PgUp is pressed check that the shuttles speed doesnt exceed any max or min values before incrementing and then if they dont increment the speed.
+	// Check if the user is pressing PgUp.
+	if (m_Input->IsPgUpPressed())
 	{
-		if (shuttleFaceMoon && shuttleSpeed < shuttleMaxSpeed || !shuttleFaceMoon && shuttleSpeed > -shuttleMaxSpeed)
+		if (shuttleFaceMoon && shuttleSpeed < shuttleMaxSpeed || !shuttleFaceMoon && shuttleSpeed > -shuttleMaxSpeed)// If the shuttleSpeed is smaller than max shuttle speed.
 		{
-			shuttleSpeed += 0.1;
+			shuttleSpeed += 0.01;// Increase shuttleSpeed.
 		}
 	}
 
-	if (m_Input->IsPgDnPressed())//When PgUp is pressed check that the shuttles speed doesnt exceed any max or min values before decrementing and then if they dont decrement the speed.
+	// Check if the user is pressing PgDn.
+	if (m_Input->IsPgDnPressed())
 	{
-		if (shuttleFaceMoon && shuttleSpeed > shuttleDefaultSpeed || !shuttleFaceMoon && shuttleSpeed > shuttleDefaultSpeed)
+		if (shuttleFaceMoon && shuttleSpeed > shuttleDefaultSpeed || !shuttleFaceMoon && shuttleSpeed > shuttleDefaultSpeed)// If the shuttleSpeed is larger than minimum shuttle speed which is shuttleDefaultSpeed.
 		{
-			shuttleSpeed -= 0.1;
+			shuttleSpeed -= 0.01;// Decrease shuttleSpeed.
 		}
 	}
 
-	if (m_Input->Is0Pressed() && !moonEclipse)//Enable Eclipse
+	// Check if the user is pressing 0 & the moon isnt already in an eclipse.
+	if (m_Input->Is0Pressed() && !moonEclipse)
 	{
-		moonEclipse = true;
+		moonEclipse = true;// Enable Eclipse.
 	}
 
-	if (m_Input->Is9Pressed() && moonEclipse)//Disable Eclipse
+	// Check if the user is pressing 9 & the moon is in an eclipse.
+	if (m_Input->Is9Pressed() && moonEclipse)
 	{
-		moonEclipse = false;
+		moonEclipse = false;// Disable Eclipse.
 	}
+
 
 	// Do the frame input processing.
 	result = HandleMovementInput(m_Timer->GetTime());
@@ -576,14 +598,14 @@ bool GraphicsClass::HandleMovementInput(float frameTime)
 	float posX, posY, posZ, rotX, rotY, rotZ;
 	int mousePosX, mousePosY, mouseChangeX, mouseChangeY;
 
-	//Gets the mouseChange between frames for the X axis.
+	// Gets the mouseChange between frames for the X axis.
 	mouseChangeX = m_Input->GetMouseXChange();
-	//Gets the mouseChange between frames for the Y axis.
+	// Gets the mouseChange between frames for the Y axis.
 	mouseChangeY = m_Input->GetMouseYChange();
 
-	mouseSensitivity = 0.1f;//Added this so that the mouseSensitivity can be changed easily.
+	mouseSensitivity = 0.1f;// Used to affect mouseMovement speed easily.
 
-	moveSpeed = 2.0f;//Movement speed is now multiplied by two.
+	moveSpeed = 2.0f;// Movement speed variable. Set to 2x faster.
 
 	// Set the frame time for calculating the updated position.
 	m_Position->SetFrameTime(frameTime);
@@ -622,14 +644,14 @@ bool GraphicsClass::HandleMovementInput(float frameTime)
 	keyDown = m_Input->IsLeftShiftPressed();
 	m_Position->SetMoveSpeed(keyDown, moveSpeed);
 
-	//Run the poisition method move mouse and pass in variables from the input class.
+	// Run the poisition method moveMouse and pass in variables from the input class.
 	m_Position->MoveMouse(mouseChangeX, mouseChangeY, mouseSensitivity);
 
 	// Get the view point position/rotation.
 	m_Position->GetPosition(posX, posY, posZ);
 	m_Position->GetRotation(rotX, rotY, rotZ);
 
-	//Reset the cursor to the centre of the screen as we now have implemented mouse movement.
+	// Reset the cursor to the centre of the screen as we now have mouse movement.
 	m_Input->ResetMousePosition();
 
 	// Set the position of the camera.
@@ -693,9 +715,9 @@ bool GraphicsClass::Render()
 		return false;
 	}
 
-	//Set rotation, translation and scale for the moon
+	//Set rotation, translation and scale for model 3.
 	m_D3D->GetWorldMatrix(worldMatrix);
-	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.03f, 0.03f, 0.03f));
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(1.0f, 1.0f, 1.0f));
 	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(rotation));
 	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(3.5f, -10.0f, 0.0f));
 
@@ -711,11 +733,10 @@ bool GraphicsClass::Render()
 
 	// Setup the rotation and translation of the Skybox.
 	m_D3D->GetWorldMatrix(worldMatrix);
-	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(-100.0f, -100.0f, -100.0f));//Revered the scale so that the sphere was turned inside out so the texture renders on the inside.
-	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(0.0f));
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(-100.0f, -100.0f, -100.0f));// Revered the scale so that the sphere was turned inside out so the texture renders on the inside.
 	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(0.0f, 0.0f, 0.0f));
 
-	// Render the Skybox using the light shader.
+	// Render the Skybox using the texture shader. Used the texture shader as the skybox isnt suposed to have shadows, reflections etc.
 	m_Skybox->Render(m_D3D->GetDeviceContext());
 	m_ShaderManager->RenderTextureShader(m_D3D->GetDeviceContext(), m_Skybox->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
 	m_Skybox->GetTexture());
@@ -728,10 +749,10 @@ bool GraphicsClass::Render()
 	// Setup the rotation and translation of the Sun.
 	m_D3D->GetWorldMatrix(worldMatrix);
 	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(1.0f, 1.0f, 1.0f));
-	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(rotation / 16));//Dividing the rotation float by 16 to slow it down by 16 times.
-	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(-1500.0f, 0.0f, 0.0f));
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(rotation / 16));// Using smaller rotation variable.
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(-1500.0f, 0.0f, 0.0f));// Moving sun -1500 units along the x-axis.
 
-	// Render the Sun using the light shader.
+	// Render the Sun using the texture shader. As the ligh is coming from the sun it should be completely lit with no shadows.
 	m_Sun->Render(m_D3D->GetDeviceContext());
 	m_ShaderManager->RenderTextureShader(m_D3D->GetDeviceContext(), m_Sun->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
 	m_Sun->GetTexture());
@@ -743,10 +764,10 @@ bool GraphicsClass::Render()
 
 	// Setup the rotation and translation of the Earth.
 	m_D3D->GetWorldMatrix(worldMatrix);
-	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.6f, 0.6f, 0.6f));
-	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(rotation / 8));//Much slower rotation as the object is very big so small changes can be seen much easier.
-	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationZ(23.5f * radianPerDegree));//The earth is on a 23.5 degree axis so I have created a variable radian which is equal to the amount of radians in 1 degree.
-	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(0.0f, 0.0f, 0.0f));
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.6f, 0.6f, 0.6f));// Scaling of the Earth (x,y,z).
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(rotation / 16));// Rotation around the y-axis.
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationZ(23.5f * radianPerDegree));// The earth is on a 23.5 degree axis, Rotation around z-axis 23.5 degrees converted to radians.
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(0.0f, 0.0f, 0.0f));// Translation of the Earth (x,y,z).
 
 	// Render the Earth using the bump map shader.
 	m_Earth->Render(m_D3D->GetDeviceContext());
@@ -759,39 +780,37 @@ bool GraphicsClass::Render()
 	}
 
 
-	//Set rotation, translation and scale for the moon
+	// Setup the rotation and translation of the Moon.
 	m_D3D->GetWorldMatrix(worldMatrix);
-	XMMATRIX moonRot;
+	XMMATRIX moonOrbitRot;
 	XMMATRIX moonTran;
 	XMMATRIX moonScale;
 
-	//Get current moon rotation mode.
+	// If the moon is Eclipsed then
 	if (moonEclipse)
 	{
-		moonRotationY = rotation / 16;
+		moonRotationY = 0.0f;// Set moonRotationY equal to 0.0f (Stops it from rotating around the origin).
 	}
 	else
 	{
-		moonRotationY = rotation * moonOrbitSpeed;
+		moonRotationY += moonOrbitSpeed;// Increase moonRotationY by the moonOrbitSpeed. 
 	}
 
-	moonXTranslation = -500.0f;//This controls both the xTranslation of the moon but the distance for the shuttle.
-	moonScale = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.3f, 0.3f, 0.3f));//Scaling of the moon (x,y,z).
-	moonRot = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(moonRotationY));//Rotation around YAW (y-axis), rotation is a constantly incrementing float value.
-	moonTran = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(moonXTranslation, 0.0f, 0.0f));//Positional values (x,y,x).
-	//Pointless doing the moons roation on its own axis as it only rotates every 27 days...
+	moonScale = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.3f, 0.3f, 0.3f));// Scaling of the Moon (x,y,z).
+	moonOrbitRot = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(moonRotationY));// Rotation around the y-axis.
+	moonTran = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(moonXTranslation, 0.0f, 0.0f));// Positional values (x,y,x).
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(rotation / 16));// Slow rotation around the Moon y-axis.
 
-	if (moonEclipse)//If the moon exlipse is enabled then the rotation is applied before the scale and translations so that it stays in its set translation.
+	if (moonEclipse)// If the moon eclipse is enabled the scale and translation is applied without orbit.
 	{
-		worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(moonRotationY));
 		worldMatrix = XMMatrixMultiply(worldMatrix, moonScale * moonTran);
 	}
-	else
+	else // Otherwise the moons scale, translation and rotation is all applied to the worldmatrix causing it to rotate around the origin.
 	{
-		worldMatrix = XMMatrixMultiply(worldMatrix, moonScale * moonTran * moonRot);//Add the matrixes together by multiplication and then add them to the moons world matrix by again multiplication.
+		worldMatrix = XMMatrixMultiply(worldMatrix, moonScale * moonTran * moonOrbitRot);
 	}
 
-	// Render moon using the bump map shader.
+	// Render Moon using the bump map shader.
 	m_Moon->Render(m_D3D->GetDeviceContext());
 	result = m_ShaderManager->RenderBumpMapShader(m_D3D->GetDeviceContext(), m_Moon->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
 	m_Moon->GetColorTexture(), m_Moon->GetNormalMapTexture(), m_Light->GetDirection(), m_Light->GetDiffuseColor());
@@ -801,20 +820,21 @@ bool GraphicsClass::Render()
 		return false;
 	}
 
-	//Set rotation, translation and scale for the shuttle
+	// Setup the rotation and translation of the Shuttle.
 	m_D3D->GetWorldMatrix(worldMatrix);
 	XMMATRIX shuttleScale;
 	XMMATRIX shuttleTrans;
-	shuttleScale = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.2f, 0.2f, 0.2f));//Scaling of the shuttle (x,y,z).
-	shuttleTrans = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(shuttleDistance, 0.0f, 0.0f));//Positional values for the shuttle (x,y,x).
-	worldMatrix = XMMatrixMultiply(worldMatrix, shuttleScale * shuttleTrans * moonRot);//Add the matrixes together by multiplication and then add them to the shuttles world matrix by again multiplication.
-	//Used the moonrotation as my rotation so the shuttle is always facing and on the path to the moon whatever the translation and scale is.
+	shuttleScale = XMMatrixMultiply(worldMatrix, XMMatrixScaling(10.0f, 10.0f, 10.0f));// Scaling of the shuttle (x,y,z).
+	shuttleTrans = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(shuttleDistance, 0.0f, 0.0f));// Positional values for the shuttle (x,y,x).
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(shuttleRotation));// Gets the rotation required to face the Moon or Earth. Controlled by shuttleController.
+	worldMatrix = XMMatrixMultiply(worldMatrix, shuttleScale * shuttleTrans * moonOrbitRot);// Add the matrixes together by multiplication and then add them to the shuttles world matrix by again multiplication.
+	// Used the moonrotation as my rotation so the shuttle is always facing and on the path to the moon whatever the translation and scale is.
 
-
-	// Render shuttle using the bump map shader.
+	// Render Shuttle using the bump map shader.
 	m_Shuttle->Render(m_D3D->GetDeviceContext());
-	result = m_ShaderManager->RenderBumpMapShader(m_D3D->GetDeviceContext(), m_Shuttle->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
-	m_Shuttle->GetColorTexture(), m_Shuttle->GetNormalMapTexture(), m_Light->GetDirection(), m_Light->GetDiffuseColor());
+	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Shuttle->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+	m_Shuttle->GetTexture(), m_Light->GetDirection(), m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(),
+	m_Camera->GetPosition(), m_Light->GetSpecularColor(), m_Light->GetSpecularPower());
 
 	if (!result)
 	{
@@ -823,18 +843,19 @@ bool GraphicsClass::Render()
 
 	// Setup the rotation and translation of the Satalite.
 	m_D3D->GetWorldMatrix(worldMatrix);
-	XMMATRIX sataliteScale;
-	XMMATRIX sataliteRotY;
-	XMMATRIX sataliteTrans;
-	sataliteScale = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.05f, 0.05f, 0.05f));//Scaling of the satalite (x,y,z).
-	sataliteRotY = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(rotation / 6));//Rotation around PITCH (y-axis), rotation is a constantly incrementing float value.
-	sataliteTrans = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(-45.0, 0.0f, 0.0f));//Positional values (x,y,x).
-	worldMatrix = XMMatrixMultiply(worldMatrix, sataliteScale * sataliteTrans * sataliteRotY);
+	XMMATRIX sateliteScale;
+	XMMATRIX sateliteRotY;
+	XMMATRIX sateliteTrans;
+	sateliteScale = XMMatrixMultiply(worldMatrix, XMMatrixScaling(5.0f, 5.0f, 5.0f));// Scaling of the satalite (x,y,z).
+	sateliteRotY = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(rotation / 6));// Rotation around the y-axis.
+	sateliteTrans = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(0.0f, 0.0f, -45.0f));// Positional values (x,y,x).
+	worldMatrix = XMMatrixMultiply(worldMatrix, sateliteScale * sateliteTrans * sateliteRotY);// Applying all matrixes to the worldMatrix together.
 
 	// Render the Satalite using the bump map shader.
-	m_Satalite->Render(m_D3D->GetDeviceContext());
-	result = m_ShaderManager->RenderBumpMapShader(m_D3D->GetDeviceContext(), m_Satalite->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
-	m_Satalite->GetColorTexture(), m_Satalite->GetNormalMapTexture(), m_Light->GetDirection(), m_Light->GetDiffuseColor());
+	m_Satelite->Render(m_D3D->GetDeviceContext());
+	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Satelite->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+	m_Satelite->GetTexture(), m_Light->GetDirection(), m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(),
+	m_Camera->GetPosition(), m_Light->GetSpecularColor(), m_Light->GetSpecularPower());
 
 	if (!result)
 	{
@@ -847,16 +868,17 @@ bool GraphicsClass::Render()
 	XMMATRIX ufoRotY;
 	XMMATRIX ufoRotX;
 	XMMATRIX ufoTrans;
-	ufoScale = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.05f, 0.05f, 0.05f));//Scaling of the satalite (x,y,z).
-	ufoRotY = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(rotation / 8));//Rotation around PITCH (y-axis), rotation is a constantly incrementing float value.
-	ufoRotX = XMMatrixMultiply(worldMatrix, XMMatrixRotationX(rotation / 8));//Rotation around ROLL (x-axis), rotation is a constantly incrementing float value.
-	ufoTrans = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(-45.0f, 0.0f, 0.0f));//Positional values (x,y,x).
-	worldMatrix = XMMatrixMultiply(worldMatrix, ufoScale * ufoTrans * ufoRotY * ufoRotX);
+	ufoScale = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.005f, 0.005f, 0.005f));// Scaling of the UFO (x,y,z).
+	ufoRotY = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(rotation / 8));// Rotation around y-axis.
+	ufoRotX = XMMatrixMultiply(worldMatrix, XMMatrixRotationZ(rotation / 4));// Rotation around z-axis.
+	ufoTrans = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(0.0f, 45.0f, 0.0f));// Positional values (x,y,x).
+	worldMatrix = XMMatrixMultiply(worldMatrix, ufoScale * ufoTrans * ufoRotY * ufoRotX);// Applying all matrixes to the worldMatrix together.
 
 	// Render the UFO using the bump map shader.
 	m_UFO->Render(m_D3D->GetDeviceContext());
-	result = m_ShaderManager->RenderBumpMapShader(m_D3D->GetDeviceContext(), m_UFO->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
-		m_UFO->GetColorTexture(), m_UFO->GetNormalMapTexture(), m_Light->GetDirection(), m_Light->GetDiffuseColor());
+	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_UFO->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+	m_UFO->GetTexture(), m_Light->GetDirection(), m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(),
+	m_Camera->GetPosition(), m_Light->GetSpecularColor(), m_Light->GetSpecularPower());
 
 	if (!result)
 	{
@@ -870,11 +892,11 @@ bool GraphicsClass::Render()
 	return true;
 }
 
-void GraphicsClass::ResetCameraPosition()
+void GraphicsClass::SetCameraPosition(float posX, float posY, float posZ, float rotX, float rotY, float rotZ)
 {
 	// Reset the camera to the original position...
-	m_Position->SetPosition(startX, startY, startZ);
-	m_Position->SetRotation(startRotX, startRotY, startRotZ);
+	m_Position->SetPosition(posX, posY, posZ);
+	m_Position->SetRotation(rotX, rotY, rotZ);
 }
 
 

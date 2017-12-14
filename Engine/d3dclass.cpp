@@ -179,16 +179,6 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
     swapChainDesc.SampleDesc.Count = 1;
     swapChainDesc.SampleDesc.Quality = 0;
 
-	// Set to full screen or windowed mode.
-	//if(fullscreen)
-	//{
-	//	swapChainDesc.Windowed = false;
-	//}
-	//else
-	//{
-	//	swapChainDesc.Windowed = true;
-	//}
-
 	swapChainDesc.Windowed = false;
 
 	// Set the scan line ordering and scaling to unspecified.

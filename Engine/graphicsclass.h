@@ -45,7 +45,7 @@
 
 static bool FULL_SCREEN = true;
 const bool VSYNC_ENABLED = true;
-const float SCREEN_DEPTH = 4000.0f;//Made bigger as the skybox wouldnt render etc.
+const float SCREEN_DEPTH = 4000.0f;//Made screen depth bigger so that it wouldnt cut the skybox out as its not a true skybox.
 const float SCREEN_NEAR = 0.1f;
 
 
@@ -77,7 +77,7 @@ public:
 	bool Initialize(HINSTANCE, HWND, int, int);
 	void Shutdown();
 	bool Frame();
-	void ResetCameraPosition();
+	void SetCameraPosition(float posX, float posY, float posZ, float rotX, float rotY, float rotZ);
 
 
 private:
@@ -86,7 +86,6 @@ private:
 	bool HandleMovementInput(float);
 	bool Render();
 
-	
 
 public:
 
@@ -112,25 +111,31 @@ private:
 	PositionClass* m_Position;
 	CameraClass* m_Camera;
 	LightClass* m_Light;
+
+	// Assignemnt Starter Models.
 	ModelClass* m_Model1;
 	ModelClass* m_Model2;
 	BumpModelClass* m_Model3;
+
+	// My Project Models
 	ModelClass* m_Skybox;
 	ModelClass* m_Sun;
 	BumpModelClass* m_Earth;
 	BumpModelClass* m_Moon;
-	BumpModelClass* m_Shuttle;
-	BumpModelClass* m_Satalite;
-	BumpModelClass* m_UFO;
+	ModelClass* m_Shuttle;
+	ModelClass* m_Satelite;
+	ModelClass* m_UFO;
 
-	
+	// Variables for controlling shuttle
 	float shuttleDistance;
 	float shuttleSpeed;
 	float shuttleMaxSpeed;
 	float shuttleDefaultSpeed;
 	float shuttleFaceMoon;
+	float shuttleRotation;
 	bool shuttleTraveling;
 
+	// Variables for controlling moon matrix.
 	float moonXTranslation;
 	float moonRotationY;
 	bool moonEclipse;
