@@ -71,8 +71,6 @@ public:
 	bool Is9Pressed();
 
 
-	
-
 private:
 	bool ReadKeyboard();
 	bool ReadMouse();

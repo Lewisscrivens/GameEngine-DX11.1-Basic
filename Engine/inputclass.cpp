@@ -214,9 +214,6 @@ void InputClass::ProcessInput()
 	m_mouseX += m_mouseState.lX;
 	m_mouseY += m_mouseState.lY;
 
-	int mouseXChange = 0;
-	int mouseYChnage = 0;
-	
 	if(m_mouseX > m_screenWidth)  
 	{ 
 		m_mouseX = m_screenWidth; 
@@ -543,3 +540,4 @@ bool InputClass::Is9Pressed()
 
 	return false;
 }
+

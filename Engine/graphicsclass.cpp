@@ -38,6 +38,11 @@ GraphicsClass::GraphicsClass()
 	// 1 degree equlas this value (Quickest method as it doesnt have to be 100% accurate for my use)
 	radianPerDegree = 0.0174533;
 
+	// Current position variable instalisation.
+	posX = 0;
+	posY = 0;
+	posZ = 0;
+
 	// Starting position for the camera on instalisation.
 	startX = -100.0f;
 	startY = 0.0f;
@@ -595,7 +600,7 @@ bool GraphicsClass::Frame()
 bool GraphicsClass::HandleMovementInput(float frameTime)
 {
 	bool keyDown;
-	float posX, posY, posZ, rotX, rotY, rotZ;
+	float rotX, rotY, rotZ;//Position variables moved to .h class.
 	int mousePosX, mousePosY, mouseChangeX, mouseChangeY;
 
 	// Gets the mouseChange between frames for the X axis.
@@ -734,7 +739,7 @@ bool GraphicsClass::Render()
 	// Setup the rotation and translation of the Skybox.
 	m_D3D->GetWorldMatrix(worldMatrix);
 	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixScaling(-100.0f, -100.0f, -100.0f));// Revered the scale so that the sphere was turned inside out so the texture renders on the inside.
-	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(0.0f, 0.0f, 0.0f));
+	worldMatrix = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(posX, posY, posZ));// Sets the current skybox position to the player position so it stays at a constant distance from the player.
 
 	// Render the Skybox using the texture shader. Used the texture shader as the skybox isnt suposed to have shadows, reflections etc.
 	m_Skybox->Render(m_D3D->GetDeviceContext());
@@ -844,12 +849,13 @@ bool GraphicsClass::Render()
 	// Setup the rotation and translation of the Satalite.
 	m_D3D->GetWorldMatrix(worldMatrix);
 	XMMATRIX sateliteScale;
-	XMMATRIX sateliteRotY;
+	XMMATRIX sateliteRot;
+	XMMATRIX sateliteRotX;
 	XMMATRIX sateliteTrans;
 	sateliteScale = XMMatrixMultiply(worldMatrix, XMMatrixScaling(5.0f, 5.0f, 5.0f));// Scaling of the satalite (x,y,z).
-	sateliteRotY = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(rotation / 6));// Rotation around the y-axis.
+	sateliteRot = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(rotation / 8));// Rotation around the y-axis.
 	sateliteTrans = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(0.0f, 0.0f, -45.0f));// Positional values (x,y,x).
-	worldMatrix = XMMatrixMultiply(worldMatrix, sateliteScale * sateliteTrans * sateliteRotY);// Applying all matrixes to the worldMatrix together.
+	worldMatrix = XMMatrixMultiply(worldMatrix, sateliteScale * sateliteTrans * sateliteRot);// Applying all matrixes to the worldMatrix together.
 
 	// Render the Satalite using the bump map shader.
 	m_Satelite->Render(m_D3D->GetDeviceContext());
@@ -866,13 +872,13 @@ bool GraphicsClass::Render()
 	m_D3D->GetWorldMatrix(worldMatrix);
 	XMMATRIX ufoScale;
 	XMMATRIX ufoRotY;
-	XMMATRIX ufoRotX;
+	XMMATRIX ufoRotZ;
 	XMMATRIX ufoTrans;
 	ufoScale = XMMatrixMultiply(worldMatrix, XMMatrixScaling(0.005f, 0.005f, 0.005f));// Scaling of the UFO (x,y,z).
 	ufoRotY = XMMatrixMultiply(worldMatrix, XMMatrixRotationY(rotation / 8));// Rotation around y-axis.
-	ufoRotX = XMMatrixMultiply(worldMatrix, XMMatrixRotationZ(rotation / 4));// Rotation around z-axis.
+	ufoRotZ = XMMatrixMultiply(worldMatrix, XMMatrixRotationZ(rotation / 4));// Rotation around z-axis.
 	ufoTrans = XMMatrixMultiply(worldMatrix, XMMatrixTranslation(0.0f, 45.0f, 0.0f));// Positional values (x,y,x).
-	worldMatrix = XMMatrixMultiply(worldMatrix, ufoScale * ufoTrans * ufoRotY * ufoRotX);// Applying all matrixes to the worldMatrix together.
+	worldMatrix = XMMatrixMultiply(worldMatrix, ufoScale * ufoTrans * (ufoRotY * ufoRotZ));// Applying all matrixes to the worldMatrix together.
 
 	// Render the UFO using the bump map shader.
 	m_UFO->Render(m_D3D->GetDeviceContext());

@@ -36,7 +36,6 @@
 // Increase Shuttle Speed: PgUp
 // Decrease Shuttle Speed: PgDn
 //
-//
 ////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////
@@ -88,6 +87,11 @@ private:
 
 
 public:
+
+	// Variables to store the current user location.
+	float posX;
+	float posY;
+	float posZ;
 
 	float startX;
 	float startY;
