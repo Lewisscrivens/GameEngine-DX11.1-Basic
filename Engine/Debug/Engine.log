@@ -1,4 +1,14 @@
-﻿  positionclass.cpp
+﻿  timerclass.cpp
+  textureshaderclass.cpp
+  textureclass.cpp
+  systemclass.cpp
+  shadermanagerclass.cpp
+  positionclass.cpp
+  modelclass.cpp
+  main.cpp
+  lightshaderclass.cpp
+  lightclass.cpp
+  inputclass.cpp
   graphicsclass.cpp
 e:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(52): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 e:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(97): warning C4316: 'D3DClass': object allocated on the heap may not be aligned 16
@@ -11,6 +21,12 @@ e:\university files\year 2\computer games studio 2\term 1\assignment\engine\engi
 e:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(604): warning C4101: 'mousePosY': unreferenced local variable
 e:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(604): warning C4101: 'mousePosX': unreferenced local variable
 e:\university files\year 2\computer games studio 2\term 1\assignment\engine\engine\graphicsclass.cpp(774): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  d3dclass.cpp
+  cameraclass.cpp
+  bumpmodelclass.cpp
+  bumpmapshaderclass.cpp
+  DDSTextureLoader.cpp
   Generating Code...
+bumpmapshaderclass.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/SAFESEH' specification
   Engine.vcxproj -> E:\University Files\Year 2\Computer Games Studio 2\Term 1\Assignment\Engine\Debug\Engine.exe
   Engine.vcxproj -> E:\University Files\Year 2\Computer Games Studio 2\Term 1\Assignment\Engine\Debug\Engine.pdb (Full PDB)
