@@ -3,13 +3,11 @@
 A DirectX 11 Game Engine created for my assignment in Game Engine Architecture
 at The University of Huddersfield.
 
-References:
-
 Models:
 
-Satellite       - https://www.turbosquid.com/FullPreview/Index.cfm/ID/337131
-Space Shuttle   - https://www.turbosquid.com/FullPreview/Index.cfm/ID/337135
-Sphere          - Made in 3DS Max.
+ - Satellite       - https://www.turbosquid.com/FullPreview/Index.cfm/ID/337131
+ - Space Shuttle   - https://www.turbosquid.com/FullPreview/Index.cfm/ID/337135
+ - Sphere          - Made in 3DS Max.
 
 
 Textures provided by Huddersfield University:
