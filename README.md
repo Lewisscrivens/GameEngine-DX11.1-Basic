@@ -3,6 +3,8 @@
 A DirectX 11 Game Engine created for my assignment in Game Engine Architecture
 at The University of Huddersfield.
 
+----------------------------------------------------------------------------------
+
 Features:
 
 - Omnidirectional movement within the editor.
@@ -10,9 +12,13 @@ Features:
 - Skybox.
 - Example scene.
 
+----------------------------------------------------------------------------------
+
 Example scene:
 
 The scene contains the earth and the moon orbiting the earth along with a satelite and alien UFO. The is also a space shuttle that will go between the earth and the moon. The sun is shown in the distance as I only had directional light working.
+
+----------------------------------------------------------------------------------
 
 Controls:
 
@@ -39,7 +45,7 @@ Launch Shuttle: M
 Increase Shuttle Speed: PgUp
 Decrease Shuttle Speed: PgDn
 
---------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------
 
 Refferences are shown bellow.
 
