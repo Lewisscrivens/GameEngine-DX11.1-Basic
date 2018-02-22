@@ -22,31 +22,25 @@ The scene contains the earth and the moon orbiting the earth along with a sateli
 
 Controls:
 
-Fullscreen: F11 [NOT WORKING CURRENTLY]
-
-Camera Up: Mouse y-axis
-
-Camera Right: Mouse x-axis
-
-Forward: W
-Back: S
-Left: A
-Right: D
-Up: Space Bar
-Down: Left Ctrl
-Increase Camera Speed: Left Shift
-Moon Orbit Speed:
-Increase: NUM_PLUS
-Decrease: NUM_MINUS
-Reset: NUM_0
-Moon Eclipse:
-Enable: 0
-Disable: 9
-Reset Camera Location: R
-Set Camera Start Location: H
-Launch Shuttle: M
-Increase Shuttle Speed: PgUp
-Decrease Shuttle Speed: PgDn
+- Camera Up: Mouse y-axis
+- Camera Right: Mouse x-axis
+- Forward: W
+- Back: S
+- Left: A
+- Right: D
+- Up: Space Bar
+- Down: Left Ctrl
+- Increase Camera Speed: Left Shift
+- Increase Moon Orbit Speed: NUM_PLUS
+- Decrease Moon Orbit Speed: NUM_MINUS
+- Reset Moon Orbit Speed: NUM_0
+- Enable Moon Eclipse: 0
+- Disable Moon Eclipse: 9
+- Reset Camera Location: R
+- Set Camera Start Location: H
+- Launch Shuttle: M
+- Increase Shuttle Speed: PgUp
+- Decrease Shuttle Speed: PgDn
 
 ----------------------------------------------------------------------------------
 
