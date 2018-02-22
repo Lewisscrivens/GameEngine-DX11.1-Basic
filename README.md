@@ -23,8 +23,11 @@ The scene contains the earth and the moon orbiting the earth along with a sateli
 Controls:
 
 Fullscreen: F11 [NOT WORKING CURRENTLY]
+
 Camera Up: Mouse y-axis
+
 Camera Right: Mouse x-axis
+
 Forward: W
 Back: S
 Left: A
