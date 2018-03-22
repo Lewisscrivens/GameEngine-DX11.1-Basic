@@ -1,6 +1,6 @@
 # GameEngine - DX11.1 - Version 1
 
-A DirectX 11.1 Game Engine created for my first term assignment in Game Engine Architecture
+A DirectX 11.1 Game Engine created from a simple template for my first term assignment in Game Engine Architecture
 at The University of Huddersfield.
 
 ----------------------------------------------------------------------------------
