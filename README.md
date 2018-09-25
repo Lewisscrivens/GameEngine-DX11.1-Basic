@@ -1,7 +1,7 @@
 # GameEngine - DX11.1 - Basic
 
 A DirectX 11.1 Game Engine created from a simple template for my first term assignment in Game Engine Architecture
-at The University of Huddersfield.
+at The University of Huddersfield. Second year.
 
 ----------------------------------------------------------------------------------
 
