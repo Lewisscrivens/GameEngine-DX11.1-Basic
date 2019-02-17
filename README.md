@@ -3,6 +3,8 @@
 A DirectX 11.1 Game Engine created from a simple template for my first term assignment in Game Engine Architecture
 at The University of Huddersfield. Second year.
 
+A new and improved version of this project can be found here: https://github.com/Lewisscrivens/GameEngine-DX11.1-Shadows
+
 ----------------------------------------------------------------------------------
 
 Features:
